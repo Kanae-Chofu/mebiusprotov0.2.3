@@ -1,2 +1,3 @@
 bcrypt
 streamlit
+mecab-python3
