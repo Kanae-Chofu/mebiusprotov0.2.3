@@ -1,3 +1,6 @@
+import sys
+print(sys.executable)
+
 import streamlit as st
 import sqlite3
 from modules.user import (
