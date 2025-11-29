@@ -1,2 +1,3 @@
 bcrypt
 streamlit
+openai
