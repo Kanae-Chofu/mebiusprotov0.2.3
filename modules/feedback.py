@@ -3,10 +3,6 @@ import re
 from datetime import datetime
 from modules.utils import now_str
 
-# MeCabによる日本語形態素解析
-import MeCab
-import unidic_lite
-
 DB_PATH = "db/mebius.db"
 
 # 定数（設計意図の明示）
@@ -180,23 +176,21 @@ def length_feedback(sender, receiver):
     else:
         return f"短めの会話でした（{len(rows)}件・{int(duration)}分）"
 
-# 🤖 日本語テキストの形態素解析とトークン化
-def tokenize_japanese(text):
-    tagger = MeCab.Tagger(f"-d {unidic_lite.DICDIR} -Owakati")
-    return tagger.parse(text).strip().split()
-
-# 🤖 話題の広がり（語彙の多様性）
+# 🤖 話題の広がり（語彙の多様性）※簡易版
 def diversity_feedback(sender, receiver):
     rows = get_valid_chat(sender, receiver)
     if not rows:
         return "会話がまだありません"
     sender_msgs = [m for s, m, _ in rows if s == sender]
+
+    # MeCabを消したので「スペースで分割」するだけの簡易版
     all_words = []
     for msg in sender_msgs:
-        words = tokenize_japanese(msg)
-        all_words.extend(words)
+        all_words.extend(msg.split())
+
     unique_words = set(all_words)
     count = len(unique_words)
+
     if count > 50:
         return f"語彙が豊かで、多様な話題が展開されていました（{count}種類）"
     elif count > 20:
